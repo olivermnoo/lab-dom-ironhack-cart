@@ -1,47 +1,78 @@
-// ITERATION 1
-
 function updateSubtotal(product) {
-  const prices = product.querySelector(".price span").innerHTML; // .price acessa a classe price dentro do produto e depois disso acessaremos o span, para puxar apenas o valor visivel do span usamos o innerHTML
-  const quantity = product.querySelector(".quantity input").value; // usar o .propriedade porque o input é uma tag self closed, para puxar apenas o valor
-  const subTotal = prices * quantity;
-  product.querySelector(".subtotal span").innerHTML = subTotal;
-  return subTotal;
+  console.log("Calculating subtotal, yey!");
+
+  const price = product.querySelector(".price span").innerHTML;
+  const quantity = product.querySelector(".quantity input").value;
+  let subtotal = price * quantity;
+
+  product.querySelector(".subtotal span").innerHTML = subtotal;
+
+  return subtotal;
 }
 
 function calculateAll() {
-  // code in the following two lines is added just for testing purposes.
-  // it runs when only iteration 1 is completed. at later point, it can be removed.
-  // const singleProduct = document.querySelector(".product");
-  const singleProduct = document.getElementsByClassName("products");
+  let totalValue = 0;
+  let allProducts = document.getElementsByClassName("product");
+  allProducts = [...allProducts];
 
-  updateSubtotal(singleProduct);
-  // end of test
-  updateSubtotal();
+  allProducts.forEach((element) => {
+    totalValue += updateSubtotal(element);
+  });
 
-  // ITERATION 2
-  //... your code goes here
-
-  // ITERATION 3
-  //... your code goes here
+  document.querySelector("h2 span").innerHTML = totalValue;
 }
-
-// ITERATION 4
 
 function removeProduct(event) {
   const target = event.currentTarget;
-  console.log("The target in remove is:", target);
-  //... your code goes here
+
+  let newTarget = target.parentNode.parentNode;
+
+  newTarget.parentNode.removeChild(newTarget);
 }
 
-// ITERATION 5
+function createProduct(event) {
+  let newTableRow = document.createElement("tr");
 
-function createProduct() {
-  //... your code goes here
+  newTableRow.innerHTML = `
+      <td class="name">
+            <span>${document.getElementById("newProductName").value}</span>
+      </td>
+      <td class="price">$<span>${
+        document.getElementById("newProductPrice").value
+      }</span></td>
+      <td class="quantity">
+          <input type="number" value="0" min="0" placeholder="Quantity" />
+      </td>
+      <td class="subtotal">$<span>0</span></td>
+      <td class="action">
+        <button class="btn btn-remove">Remove</button>
+      </td>
+    `;
+
+  newTableRow.className = "product";
+
+  document.getElementById("productsTable").append(newTableRow);
+
+  document.getElementById("newProductName").value = "";
+  document.getElementById("newProductPrice").value = "";
+
+  let allRemoveBtns = document.getElementsByClassName("btn btn-remove");
+  allRemoveBtns = [...allRemoveBtns];
+  allRemoveBtns.forEach((element) => {
+    element.addEventListener("click", removeProduct);
+  });
 }
 
 window.addEventListener("load", () => {
   const calculatePricesBtn = document.getElementById("calculate");
   calculatePricesBtn.addEventListener("click", calculateAll);
 
-  //... your code goes here
+  const createProductBtn = document.getElementById("create");
+  createProductBtn.addEventListener("click", createProduct);
+
+  let allRemoveBtns = document.getElementsByClassName("btn btn-remove");
+  allRemoveBtns = [...allRemoveBtns];
+  allRemoveBtns.forEach((element) => {
+    element.addEventListener("click", removeProduct);
+  });
 });
